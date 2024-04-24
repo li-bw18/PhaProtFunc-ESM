@@ -50,11 +50,11 @@ d. biopython: `conda install -c bioconda biopython`
 
 (1) Download the model (The working path is still 'PhaProtFunc-ESM')
 
-`wget -c https://zenodo.org/records/10438949/files/binary.pth.gz`
+`wget -c https://zenodo.org/records/11058428/files/model.tar.gz`
 
 (2) Unpack the file
 
-`gzip -d binary.pth.gz`
+`tar xzvf model.tar.gz`
 
 ### (Optional) Step 3: test the software ###
 
@@ -62,7 +62,7 @@ Run this command (a test prediction with 20 proteins) to see whether the softwar
 
 `python predict.py test.fa -o result/`
 
-If the software is installed correctly and completely, this step will finish in less than 5 minutes (might be longer if your device is too old) without any error. The results of the test prediction will be saved in the result folder.
+If the software is installed correctly and completely, this step will finish in less than 10 minutes (might be longer if your device is too old) without any error. The results of the test prediction will be saved in the result folder.
 
 ### Step 4: prediction ###
 
@@ -110,11 +110,11 @@ The descriptions for the result files are in the 'discription.txt' file of the o
 
 (2) Download the training data
 
-`wget -c https://zenodo.org/records/10438949/files/binary.pth.gz`
+`wget -c https://zenodo.org/records/11058503/files/data.tar.gz`
 
 (3) Unpack
 
-Unpack the 'data.tar.gz'.
+`tar xzvf data.tar.gz`
 
 (4) Run
 
