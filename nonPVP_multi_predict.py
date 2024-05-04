@@ -26,7 +26,7 @@ if args.gpu_id is not None:
 else:
     device = 'cpu'
 
-nonpvpmulti = model.Model_nonPVPmulti(13)
+nonpvpmulti = model.Model_nonPVPmulti(16)
 nonpvpmulti.load_state_dict(torch.load("model/nonPVPmulti.pth"))
 if device != 'cpu' and torch.cuda.device_count() > 1:
     print("Let's use", torch.cuda.device_count(), "GPUs!")
@@ -37,16 +37,16 @@ result = pd.DataFrame(data=None)
 
 print('Process 5: nonPVP multi-label prediction')
 with torch.no_grad():
-    dic = {0: 'endonuclease', 1: 'polymerase', 2: 'terminase', 3: 'helicase', 4: 'endolysin', 
+    dic = {0: 'endonuclease', 1: 'polymerase', 2: 'terminase', 3: 'helicase', 4: 'lysin', 
            5: 'exonuclease', 6: 'reductase', 7: 'holin', 8: 'kinase', 9: 'methyltransferase',
-           10: 'primase', 11: 'ligase', 12: 'others'}
+           10: 'primase', 11: 'ligase', 12:'synthase', 13:'integrase', 14:'hydrolase', 15: 'others'}
     nonpvpmulti.eval()
-    class_prob = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], 11:[], 12:[]}
+    class_prob = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], 11:[], 12:[], 13:[], 14:[], 15:[]}
     all_max = []
     for batch_id, batch_data in enumerate(dataloader):
         batch_data = batch_data.to(device)
         predicts = torch.sigmoid(nonpvpmulti(batch_data)).cpu().numpy()
-        for i in range(13):
+        for i in range(16):
             class_prob[i].append(predicts[:, i])
         for i in range(predicts.shape[0]):
             ch_re = ''
@@ -60,9 +60,9 @@ with torch.no_grad():
     with open(f'{output}/discription.txt', 'a') as f:
         f.write('\n')
         f.write('File information of [non_PVP_multi_result.txt]:\n')
-        f.write('result.txt: column 1, sequence name; column 2, predicted result; column 3-15, probability\n')
+        f.write('result.txt: column 1, sequence name; column 2, predicted result; column 3-18, probability\n')
     result['nonPVP_multi_pred'] = all_max
-    for i in range(13):
+    for i in range(16):
         result[f'{dic[i]} probability'] = np.concatenate(class_prob[i])
     result.index = dataset.name
     result.to_csv(f'{output}/nonPVP_multi_result.txt', sep='\t', header=True, index=True)  

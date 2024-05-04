@@ -10,7 +10,7 @@ Two levels of annotation:
 
 (2-1) Multi-class prediction of PVP: major head, minor head, neck, major tail, minor tail, tail sheath, baseplate, tail fiber
 
-(2-2) Multi-label prediction of non-PVP: endonuclease, polymerase, terminase, helicase, endolysin, exonuclease, reductase, holin, kinase, methyltransferase, primase, ligase, others (more classes in the future)
+(2-2) Multi-label prediction of non-PVP: endonuclease, polymerase, terminase, helicase, lysin, exonuclease, reductase, holin, kinase, methyltransferase, primase, ligase, synthase, integrase, hydrolase, others (more classes in the future)
 
 ## Steps to predict ##
 

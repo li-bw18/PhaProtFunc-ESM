@@ -1,7 +1,5 @@
 import os
 import argparse
-import numpy as np
-import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 import utils
@@ -31,6 +29,7 @@ print('Process 3: 3B ESM2 embedding generation')
 with torch.no_grad():
     esm2.eval()
     with open(f'{args.output}/embeddings.txt', 'w') as f:
+        al = 0
         for batch_id, inputs in enumerate(dataloader):
             inputs = inputs.to(device)
             output = esm2(inputs, repr_layers=[36], return_contacts=False)["representations"][36]
@@ -39,7 +38,8 @@ with torch.no_grad():
             this = output.masked_fill(inputs<=2, 0)
             sum_o = (this.sum(axis=1) / num).cpu().detach().numpy()
             for j in range(sum_o.shape[0]):
-                f.write(str(dataset.name[j]))
+                f.write(str(dataset.name[al]))
+                al += 1
                 for k in range(sum_o.shape[1]):
                     f.write('\t')
                     f.write(str(sum_o[j, k]))
