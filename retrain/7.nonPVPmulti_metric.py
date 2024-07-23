@@ -7,7 +7,12 @@ pred = np.array(pd.read_table('metric/nonPVPmulti/result.txt', header=None, inde
 label = np.array(pd.read_table('data/nonPVP_multi/test_label.txt', header=None, index_col=None))
 prob = np.array(pd.read_table('metric/nonPVPmulti/prob.txt', header=None, index_col=None))
 
-typ = ['endonuclease', 'polymerase', 'terminase', 'helicase', 'endolysin', 'exonuclease', 'reductase', 'holin', 'kinase', 'methyltransferase', 'primase', 'ligase', 'others']
+typ = ['nuclease', 'endonuclease', 'polymerase', 'terminase', 'transferase',
+       'lysin', 'exonuclease', 'helicase', 'holin/anti-holin', 'reductase', 
+       'primase', 'kinase', 'methyltransferase', 'ligase', 'hydrolase', 
+       'synthase', 'integrase', 'esterase', 'atpase', 'isomerase', 'phosphatase',
+       'phosphoesterase', 'peptidase', 'phosphohydrolase', 'protease', 
+       'topoisomerase', 'anti-repressor', 'others']
 
 # AUC, fpr, tpr
 av_AUC = 0
@@ -30,7 +35,7 @@ plt.xlim([-0.05, 1.05])
 plt.ylim([-0.05, 1.05])
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
-plt.legend(loc="lower right", prop={'size': 12})
+plt.legend(loc="lower right", prop={'size': 8})
 plt.savefig('metric/nonPVPmulti/roc.pdf', format="pdf", bbox_inches="tight")
 plt.close()
 
@@ -45,7 +50,7 @@ plt.xlim([-0.05, 1.05])
 plt.ylim([0, 1.05])
 plt.xlabel('Recall')
 plt.ylabel('Precision')
-plt.legend(loc="lower left", prop={'size': 12})
+plt.legend(loc="lower left", prop={'size': 8})
 plt.savefig('metric/nonPVPmulti/pr.pdf', format="pdf", bbox_inches="tight")
 plt.close()
 
@@ -61,11 +66,10 @@ for i in range(pred.shape[1]):
     print(f"ACC:{(label[:, i]==pred[:, i]).sum()/len(label)}")
     av_ACC += (label[:, i]==pred[:, i]).sum()/len(label)
 
-print(f"Averaged AUC: {av_AUC/13}")
-print(f"Averaged AP: {av_AP/13}")
-print(f"Averaged ACC: {av_ACC/13}")
-print(f"ACC: {(((label==pred).sum(axis=1))==13).sum()/len(label)}")
-print(f"Averaged precision: {av_precision/13}")
-print(f"Averaged recall: {av_recall/13}")
-print(f"Averaged F1: {av_F1/13}")
-
+print(f"Averaged AUC: {av_AUC/28}")
+print(f"Averaged AP: {av_AP/28}")
+print(f"Averaged ACC: {av_ACC/28}")
+print(f"ACC: {(((label==pred).sum(axis=1))==28).sum()/len(label)}")
+print(f"Averaged precision: {av_precision/28}")
+print(f"Averaged recall: {av_recall/28}")
+print(f"Averaged F1: {av_F1/28}")

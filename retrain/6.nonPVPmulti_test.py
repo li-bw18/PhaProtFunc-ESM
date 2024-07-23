@@ -40,7 +40,7 @@ class PVP(Dataset):
 batch_size=64
 test_dataset = PVP(mode='test')
 test_dataloader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False)
-nonpvpmulti = model.Model_nonPVPmulti(13)
+nonpvpmulti = model.Model_nonPVPmulti(28)
 nonpvpmulti.load_state_dict(torch.load("model/nonPVPmulti.pth"))
 nonpvpmulti = nonpvpmulti.to(device)
 with torch.no_grad():
@@ -53,14 +53,14 @@ with torch.no_grad():
         labels = labels.to(device)
         predicts = torch.sigmoid(nonpvpmulti(inputs)).cpu().numpy()
         for i in range(len(predicts)):
-            for j in range(12):
+            for j in range(27):
                 fo.write(f"{predicts[i, j]}\t")
                 if predicts[i, j] >= 0.5:
                     fo1.write("1\t")
                 else:
                     fo1.write("0\t")
-            fo.write(f"{predicts[i, 12]}\n")
-            if predicts[i, 12] >= 0.5:
+            fo.write(f"{predicts[i, 27]}\n")
+            if predicts[i, 27] >= 0.5:
                 fo1.write("1\n")
             else:
                 fo1.write("0\n")

@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import numpy as np
 import pandas as pd
@@ -28,7 +29,7 @@ else:
     device = 'cpu'
 
 pvpmulti = model.Model_PVPmulti()
-pvpmulti.load_state_dict(torch.load("model/PVPmulti.pth"))
+pvpmulti.load_state_dict(torch.load(f"{sys.path[0]}/model/PVPmulti.pth"))
 if device != 'cpu' and torch.cuda.device_count() > 1:
     print("Let's use", torch.cuda.device_count(), "GPUs!")
     pvpmulti = nn.DataParallel(pvpmulti)
@@ -36,7 +37,7 @@ pvpmulti = pvpmulti.to(device)
 
 result = pd.DataFrame(data=None)
 
-print('Process 4: PVP multi-class prediction')
+print('Process 5: PVP multi-class prediction')
 with torch.no_grad():
     pvpmulti.eval()
     class_prob = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[]}
@@ -62,4 +63,4 @@ with torch.no_grad():
         result[f'{dic[i]} probability'] = np.concatenate(class_prob[i])
     result.index = dataset.name
     result.to_csv(f'{output}/PVP_multi_result.txt', sep='\t', header=True, index=True)  
-print('Process 4 finished!')
+print('Process 5 finished!')

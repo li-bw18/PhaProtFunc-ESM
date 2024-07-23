@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import numpy as np
 import pandas as pd
@@ -26,8 +27,8 @@ if args.gpu_id is not None:
 else:
     device = 'cpu'
 
-nonpvpmulti = model.Model_nonPVPmulti(16)
-nonpvpmulti.load_state_dict(torch.load("model/nonPVPmulti.pth"))
+nonpvpmulti = model.Model_nonPVPmulti(28)
+nonpvpmulti.load_state_dict(torch.load(f"{sys.path[0]}/model/nonPVPmulti.pth"))
 if device != 'cpu' and torch.cuda.device_count() > 1:
     print("Let's use", torch.cuda.device_count(), "GPUs!")
     nonpvpmulti = nn.DataParallel(nonpvpmulti)
@@ -35,18 +36,21 @@ nonpvpmulti = nonpvpmulti.to(device)
 
 result = pd.DataFrame(data=None)
 
-print('Process 5: nonPVP multi-label prediction')
+print('Process 6: nonPVP multi-label prediction')
 with torch.no_grad():
-    dic = {0: 'endonuclease', 1: 'polymerase', 2: 'terminase', 3: 'helicase', 4: 'lysin', 
-           5: 'exonuclease', 6: 'reductase', 7: 'holin', 8: 'kinase', 9: 'methyltransferase',
-           10: 'primase', 11: 'ligase', 12:'synthase', 13:'integrase', 14:'hydrolase', 15: 'others'}
+    dic = {0: 'nuclease', 1: 'endonuclease', 2: 'polymerase', 3: 'terminase', 4: 'transferase',
+           5: 'lysin', 6: 'exonuclease', 7: 'helicase', 8: 'holin/anti-holin', 9: 'reductase', 
+           10: 'primase', 11: 'kinase', 12: 'methyltransferase', 13: 'ligase', 14: 'hydrolase', 
+           15: 'synthase', 16: 'integrase', 17: 'esterase', 18: 'atpase', 19: 'isomerase', 
+           20: 'phosphatase', 21: 'phosphoesterase', 22: 'peptidase', 23: 'phosphohydrolase', 
+           24: 'protease', 25: 'topoisomerase', 26: 'anti-repressor', 27: 'others'}
     nonpvpmulti.eval()
-    class_prob = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], 11:[], 12:[], 13:[], 14:[], 15:[]}
+    class_prob = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], 11:[], 12:[], 13:[], 14:[], 15:[], 16:[], 17:[], 18:[], 19:[], 20:[], 21:[], 22:[], 23:[], 24:[], 25:[], 26:[], 27:[]}
     all_max = []
     for batch_id, batch_data in enumerate(dataloader):
         batch_data = batch_data.to(device)
         predicts = torch.sigmoid(nonpvpmulti(batch_data)).cpu().numpy()
-        for i in range(16):
+        for i in range(28):
             class_prob[i].append(predicts[:, i])
         for i in range(predicts.shape[0]):
             ch_re = ''
@@ -60,10 +64,10 @@ with torch.no_grad():
     with open(f'{output}/discription.txt', 'a') as f:
         f.write('\n')
         f.write('File information of [non_PVP_multi_result.txt]:\n')
-        f.write('result.txt: column 1, sequence name; column 2, predicted result; column 3-18, probability\n')
+        f.write('result.txt: column 1, sequence name; column 2, predicted result; column 3-30, probability\n')
     result['nonPVP_multi_pred'] = all_max
-    for i in range(16):
+    for i in range(28):
         result[f'{dic[i]} probability'] = np.concatenate(class_prob[i])
     result.index = dataset.name
     result.to_csv(f'{output}/nonPVP_multi_result.txt', sep='\t', header=True, index=True)  
-print('Process 5 finished!')
+print('Process 6 finished!')

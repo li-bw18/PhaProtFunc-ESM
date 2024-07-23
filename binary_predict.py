@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import numpy as np
 import pandas as pd
@@ -28,7 +29,7 @@ else:
     device = 'cpu'
 
 binary = model.Model_binary()
-binary.load_state_dict(torch.load("model/binary.pth"))
+binary.load_state_dict(torch.load(f"{sys.path[0]}/model/binary.pth", map_location=device))
 if device != 'cpu' and torch.cuda.device_count() > 1:
     print("Let's use", torch.cuda.device_count(), "GPUs!")
     binary = nn.DataParallel(binary)
@@ -36,7 +37,7 @@ binary = binary.to(device)
 
 result = pd.DataFrame(data=None)
 
-print('Process 2: Binary prediction')
+print('Process 3: Binary prediction')
 with torch.no_grad():
     binary.eval()
     all_predict = []
@@ -52,7 +53,8 @@ with torch.no_grad():
     all_label = []
     for i in list(all_max):
         all_label.append(dic[i])
-    with open(f'{output}/discription.txt', 'w') as f:
+    with open(f'{output}/discription.txt', 'a') as f:
+        f.write('\n')
         f.write('Regardless of the prediction result of the binary task, the PVP multi-class model and the nonPVP multi-label model are both applied to all input sequences.\n')
         f.write('You could combine the predictions of each model with some prior knowledge to make the final decisions.\n')
         f.write('\n')
@@ -62,4 +64,4 @@ with torch.no_grad():
     result['PVP_prob'] = all_predict
     result.index = dataset.name
     result.to_csv(f'{output}/binary_result.txt', sep='\t', header=True, index=True)  
-print('Process 2 finished!')
+print('Process 3 finished!')

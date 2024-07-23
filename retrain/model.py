@@ -4,15 +4,25 @@ import torch
 import esm
 
 class Model_binary(nn.Module):
-    def __init__(self, lis=['30', '31', '32']):
+    def __init__(self, num=4):
         super().__init__()
+        lis = []
+        if num > 33 or num < 0:
+            print('error')
+            exit(0)
+        else:
+            start = 32
+            for i in range(num):
+                lis.append(str(start))
+                start -= 1
         self.esm = esm.pretrained.esm2_t33_650M_UR50D()[0]
-        for na, p in self.named_parameters():
-            sp = na.split('.')
-            if len(sp) > 2 and sp[2] not in lis:
-                p.requires_grad = False
-            else:
-                p.requires_grad = True
+        if num > 0:
+            for na, p in self.named_parameters():
+                sp = na.split('.')
+                if sp[2] in lis or sp[1] == 'emb_layer_norm_after':
+                    p.requires_grad = True
+                else:
+                    p.requires_grad = False
         self.fc1 = nn.Linear(1280, 320)
         self.fc2 = nn.Linear(320, 80)
         self.fc3 = nn.Linear(80, 20)

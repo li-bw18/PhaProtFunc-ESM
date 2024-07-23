@@ -50,7 +50,7 @@ d. biopython: `conda install -c bioconda biopython`
 
 (1) Download the model (The working path is still 'PhaProtFunc-ESM')
 
-`wget -c https://zenodo.org/records/11058428/files/model.tar.gz`
+`wget -c https://zenodo.org/records/12797951/files/model.tar.gz`
 
 (2) Unpack the file
 
@@ -110,7 +110,7 @@ The descriptions for the result files are in the 'discription.txt' file of the o
 
 (2) Download the training data
 
-`wget -c https://zenodo.org/records/11058503/files/data.tar.gz`
+`wget -c https://zenodo.org/records/12797951/files/data.tar.gz`
 
 (3) Unpack
 

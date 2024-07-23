@@ -68,7 +68,7 @@ def trail(model, train_dataloader, val_dataloader, criterion, optimizer, nepoch,
                 predicts = torch.sigmoid(model(inputs))
                 valid_loss += criterion(predicts, labels).cpu().detach().numpy()
                 predicts = predicts.cpu().numpy()
-                valid_num += len(labels) * 13
+                valid_num += len(labels) * 28
                 valid_acc += (labels.cpu().numpy() == (predicts>=0.5)).sum()
         valid_loss = valid_loss / len(val_dataloader)
         valid_loss_list.append(valid_loss)
@@ -95,7 +95,7 @@ learning_rate = 5e-5
 weight_decay = 1e-5
 nepoch = 200
 
-nonpvpmulti = model.Model_nonPVPmulti(13)
+nonpvpmulti = model.Model_nonPVPmulti(28)
 nonpvpmulti = nonpvpmulti.to(device)
 train_dataset = PVP(mode='train')
 train_dataloader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)

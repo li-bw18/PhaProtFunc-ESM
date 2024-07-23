@@ -47,18 +47,25 @@ with torch.no_grad():
     pvpmulti.eval()
     test_acc = 0
     test_num = 0
+    fo = open('metric/PVPmulti/prob.txt', 'w')
     all_labels = np.array([])
     all_predicts = np.array([])
     for batch_id, batch_data in enumerate(test_dataloader):
         inputs,labels = batch_data
         inputs = inputs.to(device)
         labels = labels.to(device)
-        predicts = np.argmax(F.softmax(pvpmulti(inputs), 1).cpu().numpy(), axis=1)
+        predicts = F.softmax(pvpmulti(inputs), 1).cpu().numpy()
+        for i in range(len(predicts)):
+            for j in range(7):
+                fo.write(f"{predicts[i, j]}\t")
+            fo.write(f"{predicts[i, 7]}\n")
+        predicts = np.argmax(predicts, axis=1)
         labels = labels.cpu().numpy()
         test_num += len(labels)
         test_acc += (labels == predicts).sum()
         all_labels = np.concatenate((all_labels, labels))
         all_predicts = np.concatenate((all_predicts, predicts))
+    fo.close()
 
     pd.DataFrame(np.array([all_labels, all_predicts]).transpose(), columns=['labels', 'predict']).to_csv("metric/PVPmulti/result.txt", index=False)
     test_acc = test_acc / test_num

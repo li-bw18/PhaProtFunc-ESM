@@ -1,5 +1,7 @@
 import os
 import argparse
+import numpy as np
+import pandas as pd
 import torch
 from torch.utils.data import DataLoader
 import utils
@@ -25,7 +27,7 @@ else:
 
 esm2 = esm.pretrained.esm2_t36_3B_UR50D()[0].to(device)
 
-print('Process 3: 3B ESM2 embedding generation')
+print('Process 4: 3B ESM2 embedding generation')
 with torch.no_grad():
     esm2.eval()
     with open(f'{args.output}/embeddings.txt', 'w') as f:
@@ -45,4 +47,4 @@ with torch.no_grad():
                     f.write(str(sum_o[j, k]))
                 f.write('\n')
 
-print('Process 3 finished!')
+print('Process 4 finished!')
