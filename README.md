@@ -46,6 +46,8 @@ c. pandas: `conda install pandas`
 
 d. biopython: `conda install -c bioconda biopython`
 
+e. blastp: `conda install -c bioconda blast`
+
 ### Step 2: download the trained model ###
 
 (1) Download the model (The working path is still 'PhaProtFunc-ESM')
