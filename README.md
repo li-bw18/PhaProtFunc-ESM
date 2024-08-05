@@ -2,15 +2,19 @@
  
 ## Description ##
 
-A deep learning model for the annotation of phage proteins.
+A pipeline for the annotation of phage proteins.
 
-Two levels of annotation:
+Two steps of annotation (Both the tradtional alignment and the AI-based prediction):
+
+1 BLASTP to RefSeq phage proteins with known functions (results in 'start_blastp_result.txt')
+
+2 Annotation based on deep learning models
 
 (1) Binary: PVP (phage virion proteins, structural proteins) or non-PVP
 
 (2-1) Multi-class prediction of PVP: major head, minor head, neck, major tail, minor tail, tail sheath, baseplate, tail fiber
 
-(2-2) Multi-label prediction of non-PVP: endonuclease, polymerase, terminase, helicase, lysin, exonuclease, reductase, holin, kinase, methyltransferase, primase, ligase, synthase, integrase, hydrolase, others (more classes in the future)
+(2-2) Multi-label prediction of non-PVP: endonuclease, polymerase, terminase, helicase, lysin, exonuclease, reductase, holin, kinase, methyltransferase, primase, ligase, synthase, integrase, hydrolase, others (use BLASTP to further annotate 'others' proteins, and the results are in 'others_blastp_result.txt')
 
 ## Steps to predict ##
 
@@ -88,19 +92,21 @@ multi GPU machine, using multi GPUs: `python predict.py ???.fa -g x1,x2,... -o ?
 
 -o determines the output directory, -g determines the IDs of GPUs you want to use (not given -g, will use CPU)
 
-If you want to change the batch size (default is 2), please use -b, please note that the batch size cannot be negative and should not be smaller than the number of GPUs used.
+If you want to change the batch size (default is 2), please use -b. Note that the batch size cannot be negative and should not be smaller than the number of GPUs used.
+
+If you want to change the number of threads used during the BLASTP (default is 1), please use -t (eg. '-t 16' for 16 threads).
 
 Example commands:
 
-Predict proteins in 'example.fasta', save the results to 'result/', and batch size is 16.
+Predict proteins in 'example.fasta', save the results to 'result/', batch size is 16, and 32 threads for BLASTP.
 
-CPU: `python predict.py example.fa -o result/ -b 16`
+CPU: `python predict.py example.fa -o result/ -b 16 -t 32`
 
-single GPU machine: `python predict.py example.fa -o result/ -g 0 -b 16` 
+single GPU machine: `python predict.py example.fa -o result/ -g 0 -b 16 -t 32` 
 
-multi GPU machine, using one GPU (ID:2): `python predict.py example.fa -o result/ -g 2 -b 16` 
+multi GPU machine, using one GPU (ID:2): `python predict.py example.fa -o result/ -g 2 -b 16 -t 32` 
 
-multi GPU machine, using eight GPUs (ID:0-7): `python predict.py example.fa -o result/ -g 0,1,2,3,4,5,6,7 -b 16` 
+multi GPU machine, using eight GPUs (ID:0-7): `python predict.py example.fa -o result/ -g 0,1,2,3,4,5,6,7 -b 16 -t 32` 
 
 The descriptions for the result files are in the 'discription.txt' file of the output directory.
 

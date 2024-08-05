@@ -13,7 +13,7 @@ def token_generator(file, output):
     data = []
     ret = []
     for seq_record in SeqIO.parse(file, "fasta"):
-        data.append((seq_record.id, str(seq_record.seq).replace('J', 'X')))
+        data.append((seq_record.id, str(seq_record.seq).replace('J', 'X').rstrip('*')))
         ret.append(seq_record.id)
     batch_tokens = pd.DataFrame(batch_converter(data)[2]).iloc[:, :1024]
     batch_tokens.index = ret

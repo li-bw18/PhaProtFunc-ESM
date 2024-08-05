@@ -8,7 +8,11 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 import retrain.model as model
 import utils
-
+THRESHOLD = [0.8994660377502441, 0.9613317847251892, 0.8965098857879639, 0.6907848119735718, 0.9115489721298218, 0.8960577845573425, 
+             0.9361218214035034, 0.9714311361312866, 0.8769540786743164, 0.8358472585678101, 0.7862973213195801, 0.879717230796814, 
+             0.9982032775878906, 0.7012633681297302, 0.7662699222564697, 0.8361528515815735, 0.7183528542518616, 0.9357391595840454, 
+             0.9885557293891908, 0.8885876536369324, 0.905609667301178, 0.9553091526031494, 0.7482558488845825, 0.991552233695984, 
+             0.8247019052505493, 0.5, 0.9828835129737854, 0.9880273342132568]
 parser = argparse.ArgumentParser(description='nonPVPmulti')
 parser.add_argument('output', help='Path to output directory')
 parser.add_argument('batch_size', type=int, help='Define the batch size used in the prediction')
@@ -47,6 +51,7 @@ with torch.no_grad():
     nonpvpmulti.eval()
     class_prob = {0:[], 1:[], 2:[], 3:[], 4:[], 5:[], 6:[], 7:[], 8:[], 9:[], 10:[], 11:[], 12:[], 13:[], 14:[], 15:[], 16:[], 17:[], 18:[], 19:[], 20:[], 21:[], 22:[], 23:[], 24:[], 25:[], 26:[], 27:[]}
     all_max = []
+    all_confid = []
     for batch_id, batch_data in enumerate(dataloader):
         batch_data = batch_data.to(device)
         predicts = torch.sigmoid(nonpvpmulti(batch_data)).cpu().numpy()
@@ -54,13 +59,20 @@ with torch.no_grad():
             class_prob[i].append(predicts[:, i])
         for i in range(predicts.shape[0]):
             ch_re = ''
+            confid = ''
             for j in range(predicts.shape[1]):
                 if predicts[i, j] > 0.5:
                     ch_re += f'{dic[j]},'
+                    if predicts[i, j] >= THRESHOLD[j]:
+                        confid += 'High,'
+                    else:
+                        confid += 'Low,'
             if ch_re != '':
-                all_max.append(ch_re[:-1])   
+                all_max.append(ch_re[:-1])  
+                all_confid.append(confid[:-1]) 
             else:
                 all_max.append('NA')
+                all_confid.append('NA')
     with open(f'{output}/discription.txt', 'a') as f:
         f.write('\n')
         f.write('File information of [non_PVP_multi_result.txt]:\n')
@@ -68,6 +80,7 @@ with torch.no_grad():
     result['nonPVP_multi_pred'] = all_max
     for i in range(28):
         result[f'{dic[i]} probability'] = np.concatenate(class_prob[i])
+    result['confidence'] = all_confid
     result.index = dataset.name
     result.to_csv(f'{output}/nonPVP_multi_result.txt', sep='\t', header=True, index=True)  
 print('Process 6 finished!')

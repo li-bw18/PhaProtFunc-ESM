@@ -28,11 +28,11 @@ with open(f'{output}/discription.txt', 'w') as f:
     f.write('This file saves the information of BLASTP results to the all Refseq annotated phage sequences\n')
     f.write('result.txt: column 1, sequence name; column 2, target sequence id; column 3, target sequence annotation; column 4, evalue; column 5, percent of identical amino acids\n')
 
-subprocess.call([f'blastp -query {args.input} -out {args.output}/temp_blastp.out -db {sys.path[0]}/blastp_database/all/all -outfmt "6 qseqid sseqid evalue pident" -num_threads {args.threads}'], shell=True)
+subprocess.call([f'blastp -query {args.input} -out {output}/temp_blastp.out -db {sys.path[0]}/blastp_database/all/all -outfmt "6 qseqid sseqid evalue pident" -num_threads {args.threads} -evalue 1e-5'], shell=True)
 
 utils.format_blastp(output, 0)
 
-subprocess.call([f'rm -rf {args.output}/temp_blastp.out'], shell=True)
+subprocess.call([f'rm -rf {output}/temp_blastp.out'], shell=True)
 
 print('Process 1 finished!')
 
@@ -67,13 +67,13 @@ with open(f'{output}/discription.txt', 'w') as f:
 
 utils.get_others_list(args.input, output)
 
-subprocess.call([f'blastp -query {args.output}/temp_others.fasta -out {args.output}/temp_blastp.out -db {sys.path[0]}/blastp_database/others/others -outfmt "6 qseqid sseqid evalue pident" -num_threads {args.threads}'], shell=True)
+subprocess.call([f'blastp -query {output}/temp_others.fasta -out {output}/temp_blastp.out -db {sys.path[0]}/blastp_database/others/others -outfmt "6 qseqid sseqid evalue pident" -num_threads {args.threads} -evalue 1e-5'], shell=True)
 
 utils.format_blastp(output, 1)
 
-subprocess.call([f'rm -rf {args.output}/temp_blastp.out'], shell=True)
+subprocess.call([f'rm -rf {output}/temp_blastp.out'], shell=True)
 
-subprocess.call([f'rm -rf {args.output}/temp_others.fasta'], shell=True)
+subprocess.call([f'rm -rf {output}/temp_others.fasta'], shell=True)
 
 print('Process 7 finished!')
 
