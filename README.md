@@ -109,21 +109,3 @@ multi GPU machine, using one GPU (ID:2): `python predict.py example.fa -o result
 multi GPU machine, using eight GPUs (ID:0-7): `python predict.py example.fa -o result/ -g 0,1,2,3,4,5,6,7 -b 16 -t 32` 
 
 The descriptions for the result files are in the 'discription.txt' file of the output directory.
-
-## Steps to retrain our model ##
-
-(1) Go to the directory of retrain (The working path is still 'PhaProtFunc-ESM')
-
-`cd retrain` (for example)
-
-(2) Download the training data
-
-`wget -c https://zenodo.org/records/12797951/files/data.tar.gz`
-
-(3) Unpack
-
-`tar xzvf data.tar.gz`
-
-(4) Run
-
-Run all the scripts one by one in the 'retrain' directory, you might need to adjust these scripts a bit to fit your device.
