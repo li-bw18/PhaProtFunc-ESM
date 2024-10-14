@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
-import retrain.model as model
+import model
 import utils
 THRESHOLD = [0.2427910417318344, 0.9295542240142822, 0.6040518879890442, 0.6302810907363892, 
              0.7795376181602478, 0.6585505604743958, 0.8244971632957458, 0.9907620549201964]

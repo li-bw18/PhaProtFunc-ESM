@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.nn.functional as F
-import retrain.model as model
+import model
 import utils
 THRESHOLD = 0.8231529593467712
 parser = argparse.ArgumentParser(description='Binary')

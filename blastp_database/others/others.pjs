@@ -1,0 +1,22 @@
+{
+  "version": "1.2",
+  "dbname": "others",
+  "dbtype": "Protein",
+  "db-version": 5,
+  "description": "/home/libowen/project_pvp/nn/blastp/all.fasta",
+  "number-of-letters": 4003633,
+  "number-of-sequences": 18727,
+  "last-updated": "2024-07-17T02:40:00",
+  "number-of-volumes": 1,
+  "bytes-total": 5966286,
+  "bytes-to-cache": 4172305,
+  "files": [
+    "others.pdb",
+    "others.phr",
+    "others.pin",
+    "others.pot",
+    "others.psq",
+    "others.ptf",
+    "others.pto"
+  ]
+}
