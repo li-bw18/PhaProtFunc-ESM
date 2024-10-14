@@ -32,7 +32,7 @@ else:
     device = 'cpu'
 
 nonpvpmulti = model.Model_nonPVPmulti(28)
-nonpvpmulti.load_state_dict(torch.load(f"{sys.path[0]}/model/nonPVPmulti.pth"))
+nonpvpmulti.load_state_dict(torch.load(f"{sys.path[0]}/model/nonPVPmulti.pth", map_location=device))
 if device != 'cpu' and torch.cuda.device_count() > 1:
     print("Let's use", torch.cuda.device_count(), "GPUs!")
     nonpvpmulti = nn.DataParallel(nonpvpmulti)

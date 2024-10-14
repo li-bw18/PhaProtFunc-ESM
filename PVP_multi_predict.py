@@ -30,7 +30,7 @@ else:
     device = 'cpu'
 
 pvpmulti = model.Model_PVPmulti()
-pvpmulti.load_state_dict(torch.load(f"{sys.path[0]}/model/PVPmulti.pth"))
+pvpmulti.load_state_dict(torch.load(f"{sys.path[0]}/model/PVPmulti.pth", map_location=device))
 if device != 'cpu' and torch.cuda.device_count() > 1:
     print("Let's use", torch.cuda.device_count(), "GPUs!")
     pvpmulti = nn.DataParallel(pvpmulti)
