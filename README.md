@@ -110,6 +110,16 @@ multi GPU machine, using eight GPUs (ID:0-7): `python predict.py example.fa -o r
 
 The descriptions for the result files are in the 'discription.txt' file of the output directory.
 
+GPU memory test and recommended batch size of this pipeline (highest during the whole process)
+
+| BATCH SIZE | GPU memory  | GPU type                   |
+|------------|-------------|----------------------------|
+| 4          | 13630MB     |                            |
+| 8          | 15930MB     |                            |
+| 16         | 20530MB     | 3090/4090 24GB             |
+| 32         | 29730MB     | V100 32GB                  |
+| 48         | 38930MB     | A100 40GB & A40 48GB       |
+
 ## Step by step running ##
 
 In cases where CPU and GPU resources are on separate servers, we provide a stepwise execution method. This approach splits the workflow into two CPU steps and three GPU steps, enabling the pipeline to run across different servers and maximize computational efficiency. 
