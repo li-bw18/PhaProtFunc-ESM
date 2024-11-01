@@ -76,7 +76,7 @@ with torch.no_grad():
     with open(f'{output}/discription.txt', 'a') as f:
         f.write('\n')
         f.write('File information of [non_PVP_multi_result.txt]:\n')
-        f.write('result.txt: column 1, sequence name; column 2, predicted result; column 3-30, probability\n')
+        f.write('column 1, sequence name; column 2, predicted result; column 3-30, probability\n')
     result['nonPVP_multi_pred'] = all_max
     for i in range(28):
         result[f'{dic[i]} probability'] = np.concatenate(class_prob[i])

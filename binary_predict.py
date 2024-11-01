@@ -65,7 +65,7 @@ with torch.no_grad():
         f.write('You could combine the predictions of each model with some prior knowledge to make the final decisions.\n')
         f.write('\n')
         f.write('File information of [binary_result.txt]:\n')
-        f.write('result.txt: column 1, sequence name; column 2, predicted result; column 3, PVP probability\n')
+        f.write('column 1, sequence name; column 2, predicted result; column 3, PVP probability\n')
     result['binary_pred'] = all_label
     result['PVP_prob'] = all_predict
     result['confidence'] = all_confid

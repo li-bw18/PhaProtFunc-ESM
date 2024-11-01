@@ -70,6 +70,31 @@ def get_others_list(file, output):
     fi2.close()
     fo.close()
 
+def left_join_blastp(output):
+    a = pd.read_table(f'{output}/binary_result.txt', header=0, index_col=None)
+    a.columns = ['query','0','1','2']
+    a = a.iloc[:,0:1]
+    b = pd.read_table(f'{output}/start_blastp_result.txt', header=0, index_col=None)
+    pd.merge(a, b, on = ['query'], how='left').to_csv(f'{output}/add_na_start_blastp_result.txt', sep='\t', header=True, index=False)
+    c = pd.read_table(f'{output}/others_blastp_result.txt', header=0, index_col=None)
+    pd.merge(a, c, on = ['query'], how='left').to_csv(f'{output}/add_na_others_blastp_result.txt', sep='\t', header=True, index=False)
+
+def summary(output):
+    a = pd.read_table(f'{output}/binary_result.txt', header=0, index_col=None)
+    a.columns = ['query','binary_result','1','binary_confidence']
+    b = pd.read_table(f'{output}/add_na_start_blastp_result.txt', header=0, index_col=None)
+    b.columns = ['query', 'target', 'blastp_annotation', 'evalue', 'identity']
+    a = pd.merge(b.iloc[:,[0, 2]], a.iloc[:,[0, 1, 3]], on = ['query'], how='left')
+    b = pd.read_table(f'{output}/PVP_multi_result.txt', header=0, index_col=None)
+    b.columns = ['query', 'PVP_multi_result', '1', '2', '3', '4', '5', '6', '7', '8', 'PVP_multi_confidence']
+    a = pd.merge(a, b.iloc[:,[0, 1, 10]], on = ['query'], how='left')
+    b = pd.read_table(f'{output}/nonPVP_multi_result.txt', header=0, index_col=None)
+    b.columns = ['query', 'nonPVP_multi_result', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', 'nonPVP_multi_confidence']
+    a = pd.merge(a, b.iloc[:,[0, 1, 30]], on = ['query'], how='left')
+    b = pd.read_table(f'{output}/add_na_others_blastp_result.txt', header=0, index_col=None)
+    b.columns = ['query', 'target', 'others_blastp_annotation', 'evalue', 'identity']
+    pd.merge(a, b.iloc[:,[0, 2]], on = ['query'], how='left').to_csv(f'{output}/summary_result.txt', sep='\t', header=True, index=False)
+
 class PVP_binary(Dataset):
     def __init__(self, output):
         super().__init__()

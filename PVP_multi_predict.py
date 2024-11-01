@@ -58,7 +58,7 @@ with torch.no_grad():
     with open(f'{output}/discription.txt', 'a') as f:
         f.write('\n')
         f.write('File information of [PVP_multi_result.txt]:\n')
-        f.write('result.txt: column 1, sequence name; column 2, predicted result; column 3-10, probability\n')
+        f.write('column 1, sequence name; column 2, predicted result; column 3-10, probability\n')
     result['PVP_multi_pred'] = all_label
     for i in range(8):
         result[f'{dic[i]} probability'] = np.concatenate(class_prob[i])

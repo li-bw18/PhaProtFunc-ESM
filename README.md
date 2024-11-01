@@ -109,3 +109,76 @@ multi GPU machine, using one GPU (ID:2): `python predict.py example.fa -o result
 multi GPU machine, using eight GPUs (ID:0-7): `python predict.py example.fa -o result/ -g 0,1,2,3,4,5,6,7 -b 16 -t 32` 
 
 The descriptions for the result files are in the 'discription.txt' file of the output directory.
+
+## Step by step running ##
+
+In cases where CPU and GPU resources are on separate servers, we provide a stepwise execution method. This approach splits the workflow into two CPU steps and three GPU steps, enabling the pipeline to run across different servers and maximize computational efficiency. 
+
+Each GPU step has different memory requirements, allowing the use of varied batch sizes to fully utilize GPU capacity.
+
+To execute the pipeline, please run the following scripts in order:
+
+`1.CPU_1_predict.py`
+
+`2.GPU_1_predict.py`
+
+`3.GPU_2_predict.py`
+
+`4.GPU_3_predict.py`
+
+`5.CPU_2_predict.py`
+
+### Step 1: Blastp annotation (CPU machine) ###
+
+`python 1.CPU_1_predict.py [PATH_TO_FASTA_FILE] -o [PATH_TO_DESIRED_OUTPUT_DIRECTORY] -t [CPU_THREADS]`
+
+This step will use the CPU to run BLASTP, and multi-threads can be added according to your computer.
+
+### Step 2: AI binary prediction (GPU machine) ###
+
+`python 2.GPU_1_predict.py -o [PATH_TO_OUTPUT_DIRECTORY] -g [GPU_ID] -b [BATCH_SIZE]`
+
+Please note that the output path given here needs to include the results of all previous steps, otherwise an error will occur because the dependent files cannot be found.
+
+The rules for using multiple GPUs here are the same as before. Here are the recommended "batch size" for different single GPU. However, please note that since all tests were conducted on a 48GB NVIDIA A40, it may not be that accurate. It is recommended to test it again by yourself.
+
+| BATCH SIZE | GPU memory  | GPU type        |
+|------------|-------------|-----------------|
+| 32         | 9592MB      |                 |
+| 64         | 16232MB     |                 |
+| 96         | 22872MB     | 3090/4090 24GB  |
+| 128        | 29514MB     | V100 32GB       |
+| 160        | 36152MB     | A100 40GB       |
+| 192        | 42792MB     | A40 48GB        |
+
+### Step 3: ESM-2 embedding generation (GPU machine) ###
+
+`python 3.GPU_2_predict.py -o [PATH_TO_OUTPUT_DIRECTORY] -g [GPU_ID] -b [BATCH_SIZE]`
+
+Please note that the output path given here needs to include the results of all previous steps, otherwise an error will occur because the dependent files cannot be found.
+
+The rules for using multiple GPUs here are the same as before. Here are the recommended "batch size" for different single GPU. However, please note that since all tests were conducted on a 48GB NVIDIA A40, it may not be that accurate. It is recommended to test it again by yourself.
+
+| BATCH SIZE | GPU memory  | GPU type                   |
+|------------|-------------|----------------------------|
+| 4          | 13630MB     |                            |
+| 8          | 15930MB     |                            |
+| 16         | 20530MB     | 3090/4090 24GB             |
+| 32         | 29730MB     | V100 32GB                  |
+| 48         | 38930MB     | A100 40GB & A40 48GB       |
+
+### Step 4: Detailed annotation (GPU machine) ###
+
+`python 4.GPU_3_predict.py -o [PATH_TO_OUTPUT_DIRECTORY] -g [GPU_ID] -b [BATCH_SIZE]`
+
+Please note that the output path given here needs to include the results of all previous steps, otherwise an error will occur because the dependent files cannot be found.
+
+The rules for using multiple GPUs here are the same as before. The GPU memory requirement of this step is very limited, so the batch size can be set freely, recommended: 512.
+
+### Step 5: Blastp annotation for 'nonPVP-others' protein (CPU machine) ###
+
+`python 5.CPU_2_predict.py [PATH_TO_FASTA_FILE] -o [PATH_TO_OUTPUT_DIRECTORY] -t [CPU_THREADS]`
+
+Please note that the output path given here needs to include the results of all previous steps, otherwise an error will occur because the dependent files cannot be found.
+
+This step will use the CPU to run BLASTP, and multi-threads can be added according to your computer.
